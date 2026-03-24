@@ -1,3 +1,4 @@
+
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -27,13 +28,32 @@ def evaluate_model(model, X_test, y_test):
     accuracy = accuracy_score(y_test, predictions)
     return accuracy
 
-def visualize_data(df):
+def visualize_data(df, base_dir):
+    # Docker環境では/app/screenshots、ローカルでは../screenshots
+    docker_screenshots = '/app/screenshots'
+    local_screenshots = os.path.join(base_dir, '../screenshots')
+    screenshots_dir = docker_screenshots if os.path.exists(docker_screenshots) else local_screenshots
+    os.makedirs(screenshots_dir, exist_ok=True)
+    # ヒストグラム
     plt.figure(figsize=(10, 6))
     plt.hist(df['target_column'], bins=30, alpha=0.7)
     plt.title('Target Column Distribution')
     plt.xlabel('Value')
     plt.ylabel('Frequency')
-    plt.show()
+    hist_path = os.path.join(screenshots_dir, 'histogram.png')
+    plt.savefig(hist_path)
+    plt.close()
+    # 散布図（特徴量が2つ以上ある場合のみ）
+    features = [col for col in df.columns if col != 'target_column']
+    if len(features) >= 2:
+        plt.figure(figsize=(8, 6))
+        plt.scatter(df[features[0]], df[features[1]], c=df['target_column'], cmap='viridis', alpha=0.7)
+        plt.title('Feature Scatter Plot')
+        plt.xlabel(features[0])
+        plt.ylabel(features[1])
+        scatter_path = os.path.join(screenshots_dir, 'scatter.png')
+        plt.savefig(scatter_path)
+        plt.close()
 
 def main():
     # スクリプトのディレクトリを基準に相対パスを解決
@@ -47,7 +67,7 @@ def main():
     model = train_model(X_train, y_train)
     accuracy = evaluate_model(model, X_test, y_test)
     print(f'Model Accuracy: {accuracy:.2f}')
-    visualize_data(processed_data)
+    visualize_data(processed_data, base_dir)
 
 if __name__ == '__main__':
     main()
