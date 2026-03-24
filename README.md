@@ -1,87 +1,73 @@
-# python-training Project
+# CSVデータから統計・可視化・機械学習を一括実行するPythonアプリ
 
-
-**用途（ユースケース）：**
-データ分析や機械学習の入門、または業務データの簡易な可視化・分類モデル作成に役立つサンプルプロジェクトです。
-
-このアプリは「CSV形式の表データ」を入力として、
-1. データの統計情報を出力
-2. データの分布や関係性をグラフで可視化
-3. 機械学習（ランダムフォレスト）による分類モデルを自動で作成・評価
-を一括で実行できるPythonプログラムです。
-
-たとえば「input.csv」に数値データを用意し、プログラムを実行するだけで、
-・データの基本統計量（平均・標準偏差など）
-・ターゲット列（予測したい項目）のヒストグラムや特徴量の散布図
-・分類モデルの精度（accuracy）
-が自動で出力されます。
-
-初心者でもすぐに試せるよう、仮想環境・Dockerの両方に対応しています。
-サンプルとして `data/input.csv` をそのまま使用することで、すぐに動作確認ができます。
+CSVファイルを入力するだけで、統計量の出力・グラフによる可視化・機械学習モデルの作成と評価までを一括で実行できる、Dockerと仮想環境に対応した再現性の高いデータ分析自動化ツールです。
 
 ---
 
-## 実行方法の選択
+## 処理の流れ
 
-* 手軽に試したい方 → **仮想環境（venv）**
-   * ローカル環境で簡単に実行できます
-* 環境差なく同じ結果を再現したい方 → **Docker**
-   * 誰でも同じ環境・同じ結果を再現できます
-   * 環境構築が不要で、すぐに実行できます
+**CSV入力 → 統計量出力 → 可視化（グラフ生成）→ 機械学習（分類）→ モデル評価**
 
 ---
 
-## 入力データ（input.csv）の前提条件
+## 開発背景
 
-このアプリを正しく動作させるために、入力データには以下の条件があります。
+「データ分析や機械学習を学びたい初心者が、環境構築や手順でつまずかず、すぐに実践できるアプリが欲しい」と考え、実務でも使える再現性・汎用性を意識して開発しました。
 
-- すべて数値データのCSVファイルを想定しています
+---
+
+## 想定ユーザー
+
+- Pythonやデータ分析・機械学習の学習を始めたい初心者
+- 業務データの可視化や分類モデル作成を手早く試したい方
+- ポートフォリオやGitHub公開用の実用的なサンプルを探している方
+
+---
+
+## 特長
+
+- **1コマンドで「統計量出力→グラフ化→機械学習モデル作成・評価」まで自動実行**
+- **仮想環境（venv）・Docker両対応で、環境差なく再現可能**
+- **全手順をREADMEに明記、初心者でも迷わず実行できる**
+- **実務で使える「データ前処理・可視化・モデル評価」まで網羅**
+- **コピペで使えるコマンド例を多数掲載**
+
+---
+
+## 実行イメージ・出力例
+
+1. **データの統計情報出力**
+    ```
+       feature1  feature2  target_column
+    count      5.0       5.0            5.0
+    mean       3.0       4.0            0.4
+    std        1.58      1.58           0.55
+    min        1.0       2.0            0.0
+    max        5.0       6.0            1.0
+    ```
+
+2. **グラフ表示（matplotlibウィンドウで自動表示）**
+    - ターゲット列（予測したい項目）のヒストグラム
+    - 特徴量同士の散布図
+
+    ![ヒストグラム例](screenshots/histogram.png)
+    ![散布図例](screenshots/scatter.png)
+
+    ※サンプル画像は `screenshots/` フォルダに格納しています。実行時に同様のグラフが自動生成されます。
+
+3. **モデルの評価結果**
+    ```
+    Model Accuracy: 0.80
+    ```
+
+> ※input.csvの内容を変えるだけで、これらの出力が自動的に更新されます。
+
+---
+
+## 入力データ（input.csv）の前提
+
+- すべて数値データのCSVファイルを想定
 - 「target_column」という名前のターゲット列（予測したい項目）を必ず含めてください
-
----
-
-
-## 実行結果例
-
-以下は実行時の出力例です。
-
-
-### 1. データの統計情報出力
-
-```
-   feature1  feature2  target_column
-count      5.0       5.0            5.0
-mean       3.0       4.0            0.4
-std        1.58      1.58           0.55
-min        1.0       2.0            0.0
-max        5.0       6.0            1.0
-```
-
-### 2. グラフ表示
-
-- ターゲット列のヒストグラム（matplotlibのウィンドウで表示）
-- 特徴量同士の散布図（カスタマイズ可）
-
-### 3. モデルの評価結果
-
-```
-Model Accuracy: 0.80
-```
-
----
-
-これらの出力は、input.csvの内容を変更するだけで自動的に更新されます。
-
----
-
-## 使用技術
-
-- Python 3.11
-- pandas
-- matplotlib
-- numpy
-- scikit-learn
-- Docker / docker-compose
 
 ---
 
@@ -99,52 +85,19 @@ python-training/
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
+├── screenshots/
+│   ├── histogram.png
+│   └── scatter.png
 └── README.md
 ```
 
 ---
 
-## 実行手順
+## セットアップ・実行手順
 
-### 仮想環境（venv）での実行
+### 1. 仮想環境（venv）での実行
 
-1. プロジェクトディレクトリへ移動  
-   `cd python-training`
-2. 仮想環境の作成  
-   `python -m venv .venv`
-3. 仮想環境の有効化（Windows）  
-   `.venv\Scripts\activate`
-4. 必要なライブラリのインストール  
-   `pip install -r requirements.txt`
-5. プログラムの実行  
-   `python src/main.py`
-
-### Dockerでの実行
-
-1. Docker Desktopをインストール
-2. プロジェクトディレクトリでビルド＆実行
-
-   ```
-   docker compose up --build
-   ```
-
-   または
-
-   ```
-   docker build -t pyproj .
-   docker run --rm -it -v %cd%\data:/app/data pyproj
-   ```
-
----
-
-## 注意事項
-
-- `data/input.csv` を編集することで、独自データでも簡単に試せます
-- コードや構成の改善はプルリクエスト歓迎です
-
----
-
-## コピペで使えるコマンドまとめ
+#### 【Windowsコマンドプロンプト/PowerShell】
 
 ```sh
 cd python-training
@@ -154,6 +107,164 @@ pip install -r requirements.txt
 python src/main.py
 ```
 
+#### 【Git Bash（Windows）】
+
 ```sh
+cd python-training
+python -m venv .venv
+source .venv/Scripts/activate
+pip install -r requirements.txt
+python src/main.py
+```
+
+#### 【WSL / Linux / Mac】
+
+```sh
+cd python-training
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python src/main.py
+```
+
+---
+
+### 2. Dockerでの実行
+
+#### 【全OS共通・推奨：docker compose】
+
+まずは以下を実行してください（最も簡単な方法です）。
+
+```sh
+cd python-training
 docker compose up --build
 ```
+
+この方法は環境差なく再現できるため、最も簡単で確実です。
+
+> ※「とにかくすぐ動かしたい」「初心者の方」はこの方法を推奨します。
+
+---
+
+#### 【補足：個別dockerコマンド（OS別）】
+
+docker composeが使えない場合や、細かくコントロールしたい場合は、下記のOS別コマンドを利用してください。
+
+- **Windows（PowerShell）**
+    ```sh
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v ${PWD}\data:/app/data -v ${PWD}\screenshots:/app/screenshots pyproj
+    ```
+
+- **Windows（コマンドプロンプト）**
+    ```bat
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v %cd%\data:/app/data -v %cd%\screenshots:/app/screenshots pyproj
+    ```
+
+- **Mac / Linux**
+    ```sh
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v $(pwd)/data:/app/data -v $(pwd)/screenshots:/app/screenshots pyproj
+    ```
+
+> どの方法を使えばよいか迷った場合は、まず「docker compose」の方法をお試しください。
+
+---
+
+## 使用技術
+
+- Python 3.11
+- pandas
+- matplotlib
+- numpy
+- scikit-learn
+- Docker / docker-compose
+
+---
+
+## 注意事項・カスタマイズ
+
+- `data/input.csv` を編集することで、独自データでも簡単に試せます
+- コードや構成の改善はプルリクエスト歓迎です
+- 実行時にエラーが出る場合は、PythonやDockerのバージョン、パス設定等をご確認ください
+
+---
+
+## コピペで使えるコマンドまとめ
+
+### 仮想環境（venv）
+
+- **Windowsコマンドプロンプト/PowerShell**
+    ```sh
+    cd python-training
+    python -m venv .venv
+    .venv\Scripts\activate
+    pip install -r requirements.txt
+    python src/main.py
+    ```
+
+- **Git Bash（Windows）**
+    ```sh
+    cd python-training
+    python -m venv .venv
+    source .venv/Scripts/activate
+    pip install -r requirements.txt
+    python src/main.py
+    ```
+
+- **WSL / Linux / Mac**
+    ```sh
+    cd python-training
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+    python src/main.py
+    ```
+
+---
+
+### docker compose（全OS共通・推奨）
+
+まずは以下を実行してください（最も簡単な方法です）。
+
+```sh
+cd python-training
+docker compose up --build
+```
+
+この方法は環境差なく再現できるため、最も簡単で確実です。
+
+---
+
+### dockerコマンド（OS別）
+
+- **Windows（PowerShell）**
+    ```sh
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v ${PWD}\data:/app/data -v ${PWD}\screenshots:/app/screenshots pyproj
+    ```
+
+- **Windows（コマンドプロンプト）**
+    ```bat
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v %cd%\data:/app/data -v %cd%\screenshots:/app/screenshots pyproj
+    ```
+
+- **Mac / Linux**
+    ```sh
+    cd python-training
+    docker build -t pyproj .
+    docker run --rm -it -v $(pwd)/data:/app/data -v $(pwd)/screenshots:/app/screenshots pyproj
+    ```
+
+---
+
+## ライセンス
+
+MIT License
