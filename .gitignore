@@ -1,0 +1,25 @@
+# .gitignore for python-training
+# Ignore Python virtual environments
+.venv/
+venv/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore environment and IDE files
+.env
+*.env
+*.DS_Store
+*.vscode/
+
+# Ignore data outputs and logs
+*.log
+*.sqlite3
+*.db
+
+# Ignore OS-specific files
+Thumbs.db
